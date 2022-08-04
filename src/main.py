@@ -35,6 +35,9 @@ class Main:
                     game.show_bg(screen)
                     title.show_title_screen(screen)
                 else:
+                    game.show_bg(screen)
+                    game.show_last_move(screen)
+                    game.show_pieces(screen)
                     title.show_title_screen(screen, win_screen=True, winner=winner)
 
                 for event in pygame.event.get():
@@ -42,10 +45,11 @@ class Main:
                     # click
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         computer_playing, game_occurring = title.versus_bot(event.pos)
-                        game.reset()
-                        game = self.game
-                        board = self.game.board
-                        dragger = self.game.dragger
+                        if game_occurring:
+                            game.reset()
+                            game = self.game
+                            board = self.game.board
+                            dragger = self.game.dragger
 
                     # quit application
                     elif event.type == pygame.QUIT:

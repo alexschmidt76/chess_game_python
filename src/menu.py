@@ -7,14 +7,14 @@ class Menu():
     def __init__(self) -> None:
         self.button_width = 3.0 * SQSIZE
         self.button_hight = 0.5 * SQSIZE
+        print(self.button_hight)
 
-        # title screen buttons
+        # buttons
         self.hvh_button_pos = (2.5 * SQSIZE + (1.5 * SQSIZE - 128), 4.25 * SQSIZE + (0.25 * SQSIZE - 15))
         self.hvh_bottom_right = (self.hvh_button_pos[0] + self.button_width, self.hvh_button_pos[1] + self.button_hight)
+
         self.hvr_button_pos = (2.5 * SQSIZE + (1.5 * SQSIZE - 128), 5.25 * SQSIZE + (0.25 * SQSIZE - 15))
         self.hvr_bottom_right = (self.hvr_button_pos[0] + self.button_width, self.hvr_button_pos[1] + self.button_hight)
-
-        # win screen buttons
 
     def show_title_screen(self, surface, win_screen=False, winner=None):
 
@@ -49,6 +49,9 @@ class Menu():
         surface.blit(pygame.font.SysFont('monospace', 30, bold=True).render('HUMAN vs ROBOT', 1, (56, 56, 56)), self.hvr_button_pos)
     
     def versus_bot(self, pos):
+        print(pos)
+        print(self.hvh_button_pos)
+        print(self.hvr_bottom_right)
         if (pos > self.hvh_button_pos) and (pos < self.hvh_bottom_right):
             return False, True
         elif (pos > self.hvr_button_pos) and (pos < self.hvr_bottom_right):

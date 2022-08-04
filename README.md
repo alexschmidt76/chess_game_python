@@ -9,13 +9,16 @@ I am currently working on the AI aspect, which will use minimax and alpha-beta p
 Run main.py to play game.
 
 KNOWN BUGS:
-white loss not being detected in:
-white: pawn f3
-black: pawn e6
-white: pawn g4
-black: pawn f5
-white: pawn h3
-black: queen h4
+    white loss not being detected in:
+        white: pawn f3
+        black: pawn e6
+        white: pawn g4
+        black: pawn f5
+        white: pawn h3
+        black: queen h4
+    button click detection accuracy
+
 
 TODO:
-build AI
+    build AI
+    fix bugs
