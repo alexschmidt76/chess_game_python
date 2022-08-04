@@ -94,6 +94,20 @@ class Board:
                             return True
 
         return False
+    
+    def loss_check(self, color):
+        total_valid_moves = 0
+        temp_board = copy.deepcopy(self)
+        
+        for row in range(ROWS):
+            for col in range(COLS):
+                if self.squares[row][col].has_team_piece(color):
+                    temp_piece = temp_board.squares[row][col].piece
+                    self.calc_moves(temp_piece, row, col)
+                    total_valid_moves += len(temp_piece.moves)
+
+        return True if (total_valid_moves == 0) else False 
+
 
     def calc_moves(self, piece, row, col, bool=True):
         '''

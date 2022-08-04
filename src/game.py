@@ -105,8 +105,9 @@ class Game:
 
     # other methods
 
-    def next_turn(self):
+    def next_turn(self, board):
         self.next_player = 'white' if self.next_player == 'black' else 'black'
+        return False if board.loss_check(self.next_player) else True
 
     def set_hover(self, row, col):
         self.hovered_sqr = self.board.squares[row][col]
@@ -121,4 +122,5 @@ class Game:
             self.config.move_sound.play()
 
     def reset(self):
+        print('game reset')
         self.__init__() 

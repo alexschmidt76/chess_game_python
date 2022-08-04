@@ -18,8 +18,8 @@ class Main:
 
         screen = self.screen
         game = self.game
-        board = self.game.board
-        dragger = self.game.dragger
+        board = game.board
+        dragger = game.dragger
 
         while True:
             # show methods
@@ -96,12 +96,21 @@ class Main:
 
                             # sounds
                             game.play_sound(captured)
+
                             # show methods
                             game.show_bg(screen)
                             game.show_last_move(screen)
                             game.show_pieces(screen)
+
                             # next turn
-                            game.next_turn()
+                            if not game.next_turn(board):
+                                print(f'{game.next_player} loses')
+                                game.reset()
+                                game = self.game
+                                board = self.game.board
+                                dragger = self.game.dragger
+                            else:
+                                print(f'{dragger.piece.color}: {dragger.piece.name} {Square(released_row, released_col).get_alphacol(released_col)}{ROWS - released_row}')
 
                     dragger.undrag_piece()
 
@@ -125,7 +134,6 @@ class Main:
                     sys.exit()
 
             pygame.display.update()
-
 
 main = Main()
 main.mainloop() 
