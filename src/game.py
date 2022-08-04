@@ -1,3 +1,6 @@
+# stores game info
+# methods used to show background and pieces
+
 import pygame
 
 from const import *
@@ -105,22 +108,27 @@ class Game:
 
     # other methods
 
+    # change current player and check for win
     def next_turn(self, board):
         self.next_player = 'white' if self.next_player == 'black' else 'black'
         return False if board.loss_check(self.next_player) else True
 
+    # set square with mouse over it to hovered square
     def set_hover(self, row, col):
         self.hovered_sqr = self.board.squares[row][col]
 
+    # change the theme of the background
     def change_theme(self):
         self.config.change_theme()
 
+    # play sounds for movement and capture
     def play_sound(self, captured=False):
         if captured:
             self.config.capture_sound.play()
         else:
             self.config.move_sound.play()
 
+    # reset game
     def reset(self):
         print('game reset')
         self.__init__() 

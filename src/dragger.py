@@ -1,3 +1,5 @@
+# stroes piece that is being dragged by mouse
+
 import pygame
 
 from const import *
@@ -28,17 +30,21 @@ class Dragger:
 
     # other methods
 
+    # track mouse position
     def update_mouse(self, pos):
         self.mouseX, self.mouseY = pos # (xcor, ycor)
 
+    # save initial position
     def save_initial(self, pos):
         self.initial_row = pos[1] // SQSIZE
         self.initial_col = pos[0] // SQSIZE
 
+    # set dragging to true and store piece in dragger
     def drag_piece(self, piece):
         self.piece = piece
         self.dragging = True
 
+    # set dragging to false and remove piece from dragger
     def undrag_piece(self):
         self.piece = None
         self.dragging = False

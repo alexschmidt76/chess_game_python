@@ -1,3 +1,4 @@
+# stores info of an attempted move
 
 class Move:
 
@@ -6,11 +7,13 @@ class Move:
         self.initial = initial
         self.final = final
     
+    # bug testing purposes
     def __str__(self):
         s = ''
         s += f'({self.initial.row}, {self.initial.row})'
         s += f' -> ({self.final.col}, {self.final.col})'
         return s
 
+    # if self.initial and self.final are equal in two Moves, the two Moves are equal
     def __eq__(self, other) -> bool:
         return self.initial == other.initial and self.final == other.final

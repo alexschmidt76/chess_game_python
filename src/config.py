@@ -19,12 +19,14 @@ class Config:
             os.path.join('assets\sounds\capture.wav')
         )
 
+    # changes theme to next in list
     def change_theme(self):
         self.idx += 1
         self.idx %= len(self.themes)
         self.theme = self.themes[self.idx]
         print(f'theme changed to {self.themes[self.idx].name}')
 
+    # build list of names
     def _add_themes(self):
         green = Theme('green', (234, 235, 200), (119, 154, 88), (244, 247, 116), (172, 195, 51), '#C86464', '#C84646')
         brown = Theme('brown', (235, 209, 166), (165, 117, 80), (245, 234, 100), (209, 185, 59), '#C86464', '#C84646')

@@ -1,3 +1,5 @@
+# holds constants used throughout program
+
 # screen dimensions
 WIDTH = 800
 HEIGHT = 800

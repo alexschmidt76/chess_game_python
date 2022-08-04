@@ -1,5 +1,7 @@
 from color import Color
 
+# holds theme info with color
+
 class Theme:
 
     def __init__(self, name,

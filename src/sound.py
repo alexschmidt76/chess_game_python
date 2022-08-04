@@ -1,6 +1,8 @@
 from importlib.resources import path
 import pygame
 
+# hold info for a sound
+
 class Sound:
 
     def __init__(self, path) -> None:

@@ -1,3 +1,4 @@
+# used to store light and dark colors for different themes
 
 class Color:
 

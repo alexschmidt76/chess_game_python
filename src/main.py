@@ -6,6 +6,8 @@ from game import Game
 from square import Square
 from move import Move
 
+# controls the flow of the game
+
 class Main:
 
     def __init__(self):

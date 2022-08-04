@@ -1,6 +1,8 @@
 from math import inf
 import os
 
+# used to store info about individual pieces
+
 class Piece:
 
     def __init__(self, name, color, value, texture=None, texture_rect=None):
@@ -14,15 +16,20 @@ class Piece:
         self.set_texture()
         self.texture_rect = texture_rect
 
+    # set piece texture
     def set_texture(self, size=80):
         self.texture = os.path.join(
             f'assets/images/imgs-{size}px/{self.color}_{self.name}.png')
 
+    # add move to list of moves
     def add_move(self, move):
         self.moves.append(move)
 
+    # clear list of moves
     def clear_moves(self):
         self.moves = []
+
+# create instances of Piece for each piece type
 
 class Pawn(Piece):
 

@@ -6,6 +6,9 @@ from sound import Sound
 import copy
 import os
 
+# manages all piece locations
+# methods used to calculate moves and checks
+
 class Board:
 
     def __init__(self):
@@ -15,6 +18,7 @@ class Board:
         self._add_pieces('white')
         self._add_pieces('black')
 
+    # move a piece
     def move(self, piece, move, testing=False):
         initial = move.initial
         final = move.final
@@ -57,21 +61,26 @@ class Board:
         # set last move
         self.last_move = move
 
+    # check if attempted move is valid
     def valid_move(self, piece, move):
         return move in piece.moves
 
+    # check if pawn can be promoted
     def check_promotion(self, piece, final):
         if final.row == 0 or final.row == 7:
             self.squares[final.row][final.col].piece = Queen(piece.color)
 
+    # check if piece is castling
     def castling(self, initial, final):
         return abs(initial.col - final.col) == 2
 
+    # set en_passant to true for piece
     def set_true_en_passant(self, piece):
 
         if not isinstance(piece, Pawn):
             return
 
+        # all other pawns should have en_passant == False
         for row in range(ROWS):
             for col in range(COLS):
                 if isinstance(self.squares[row][col].piece, Pawn):
@@ -79,6 +88,7 @@ class Board:
 
         piece.en_passant = True
 
+    # check if move puts king in check
     def in_check(self, piece, move):
         temp_piece = copy.deepcopy(piece)
         temp_board = copy.deepcopy(self)
@@ -95,6 +105,7 @@ class Board:
 
         return False
     
+    # check if player loses after enemy turn
     def loss_check(self, color):
         total_valid_moves = 0
         temp_board = copy.deepcopy(self)
@@ -102,17 +113,14 @@ class Board:
         for row in range(ROWS):
             for col in range(COLS):
                 if self.squares[row][col].has_team_piece(color):
-                    temp_piece = temp_board.squares[row][col].piece
+                    temp_piece = copy.deepcopy(temp_board.squares[row][col].piece)
                     self.calc_moves(temp_piece, row, col)
                     total_valid_moves += len(temp_piece.moves)
 
-        return True if (total_valid_moves == 0) else False 
+        return True if (total_valid_moves == 0) else False
 
-
+    # Calculate all the possible (valid) moves of an specific piece on a specific position
     def calc_moves(self, piece, row, col, bool=True):
-        '''
-            Calculate all the possible (valid) moves of an specific piece on a specific position
-        '''
 
         def pawn_moves():
             # steps
@@ -439,11 +447,13 @@ class Board:
         elif isinstance(piece, King): 
             king_moves()
 
+    # build array of squares
     def _create(self):
         for row in range(ROWS):
             for col in range(COLS):
                 self.squares[row][col] = Square(row, col)
 
+    # add initial pieces and locations to array of squares
     def _add_pieces(self, color):
         row_pawn, row_other = (6, 7) if color == 'white' else (1, 0)
 
