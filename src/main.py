@@ -5,6 +5,7 @@ from const import *
 from game import Game
 from square import Square
 from move import Move
+from menu import Menu
 
 # controls the flow of the game
 
@@ -18,12 +19,41 @@ class Main:
 
     def mainloop(self):
 
+        game_occurring = False
+        is_win = False
+        winner = None
+        computer_playing = False
         screen = self.screen
         game = self.game
         board = game.board
         dragger = game.dragger
+        title = Menu()
 
         while True:
+            while not game_occurring:
+                if not is_win:
+                    game.show_bg(screen)
+                    title.show_title_screen(screen)
+                else:
+                    title.show_title_screen(screen, win_screen=True, winner=winner)
+
+                for event in pygame.event.get():
+
+                    # click
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        computer_playing, game_occurring = title.versus_bot(event.pos)
+                        game.reset()
+                        game = self.game
+                        board = self.game.board
+                        dragger = self.game.dragger
+
+                    # quit application
+                    elif event.type == pygame.QUIT:
+                        pygame.quit()
+                        sys.exit()
+                       
+                pygame.display.update()
+
             # show methods
             game.show_bg(screen)
             game.show_last_move(screen)
@@ -106,13 +136,16 @@ class Main:
 
                             # next turn
                             if not game.next_turn(board):
-                                print(f'{game.next_player} loses')
-                                game.reset()
-                                game = self.game
-                                board = self.game.board
-                                dragger = self.game.dragger
+                                game_occurring = False
+                                is_win = True
+                                winner = 'white' if game.next_player == 'black' else 'black'
+                                                                
                             else:
                                 print(f'{dragger.piece.color}: {dragger.piece.name} {Square(released_row, released_col).get_alphacol(released_col)}{ROWS - released_row}')
+
+                                if computer_playing and game.next_player == 'black':
+                                    # make AI moves here
+                                    pass
 
                     dragger.undrag_piece()
 
@@ -123,7 +156,7 @@ class Main:
                     if event.key == pygame.K_t:
                         game.change_theme()
 
-                     # changing themes
+                     # reset game
                     if event.key == pygame.K_r:
                         game.reset()
                         game = self.game
