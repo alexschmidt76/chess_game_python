@@ -52,11 +52,6 @@ class Menu():
     # computer_playing and game_occurring
     def versus_bot(self, pos):
         print(pos)
-        """ print('human box')
-        print((2.5 * SQSIZE, 4.25 * SQSIZE))
-        print(self.hvh_bottom_right)
-        print('bot box')
-        print((2.5 * SQSIZE, 5.25 * SQSIZE)) """
         if pos[0] > (2.5 * SQSIZE) and pos[0] < (2.5 * SQSIZE + self.button_width):
             print('x-click correct')
             if pos[1] > (4.25 * SQSIZE) and pos[1] < (4.25 * SQSIZE + self.button_hight):
