@@ -7,14 +7,14 @@ class Menu():
     def __init__(self) -> None:
         self.button_width = 3.0 * SQSIZE
         self.button_hight = 0.5 * SQSIZE
-        print(self.button_hight)
 
-        # buttons
-        self.hvh_button_pos = (2.5 * SQSIZE + (1.5 * SQSIZE - 128), 4.25 * SQSIZE + (0.25 * SQSIZE - 15))
-        self.hvh_bottom_right = (self.hvh_button_pos[0] + self.button_width, self.hvh_button_pos[1] + self.button_hight)
+        # button text positions
+        self.hvh_button_text_pos = (2.5 * SQSIZE + (1.5 * SQSIZE - 128), 4.25 * SQSIZE + (0.25 * SQSIZE - 15))
+        self.hvr_button_text_pos = (2.5 * SQSIZE + (1.5 * SQSIZE - 128), 5.25 * SQSIZE + (0.25 * SQSIZE - 15))
 
-        self.hvr_button_pos = (2.5 * SQSIZE + (1.5 * SQSIZE - 128), 5.25 * SQSIZE + (0.25 * SQSIZE - 15))
-        self.hvr_bottom_right = (self.hvr_button_pos[0] + self.button_width, self.hvr_button_pos[1] + self.button_hight)
+        # bottom right positions for buttons
+        self.hvh_bottom_right = (2.5 * SQSIZE + self.button_width, 4.25 * SQSIZE + self.button_hight)
+        self.hvr_bottom_right = (2.5 * SQSIZE + self.button_width, 5.25 * SQSIZE + self.button_hight)
 
     def show_title_screen(self, surface, win_screen=False, winner=None):
 
@@ -39,21 +39,34 @@ class Menu():
         rect = (2.5 * SQSIZE, 4.25 * SQSIZE, self.button_width, self.button_hight)
         pygame.draw.rect(surface, color, rect)
         # text on button:                 font        size                   text                 color
-        surface.blit(pygame.font.SysFont('monospace', 30, bold=True).render('HUMAN vs HUMAN', 1, (56, 56, 56)), self.hvh_button_pos)
+        surface.blit(pygame.font.SysFont('monospace', 30, bold=True).render('HUMAN vs HUMAN', 1, (56, 56, 56)), self.hvh_button_text_pos)
 
         # human v robot button
         color = (173, 173, 173)
         rect = (2.5 * SQSIZE, 5.25 * SQSIZE, self.button_width, self.button_hight)
         pygame.draw.rect(surface, color, rect)
         # text on button:                 font        size                   text                 color
-        surface.blit(pygame.font.SysFont('monospace', 30, bold=True).render('HUMAN vs ROBOT', 1, (56, 56, 56)), self.hvr_button_pos)
+        surface.blit(pygame.font.SysFont('monospace', 30, bold=True).render('HUMAN vs ROBOT', 1, (56, 56, 56)), self.hvr_button_text_pos)
     
+    # check which button is clicked, returns tuple of bools:
+    # computer_playing and game_occurring
     def versus_bot(self, pos):
         print(pos)
-        print(self.hvh_button_pos)
-        print(self.hvr_bottom_right)
-        if (pos > self.hvh_button_pos) and (pos < self.hvh_bottom_right):
-            return False, True
-        elif (pos > self.hvr_button_pos) and (pos < self.hvr_bottom_right):
-            return True, True
+        """ print('human box')
+        print((2.5 * SQSIZE, 4.25 * SQSIZE))
+        print(self.hvh_bottom_right)
+        print('bot box')
+        print((2.5 * SQSIZE, 5.25 * SQSIZE)) """
+        if pos[0] > (2.5 * SQSIZE) and pos[0] < (2.5 * SQSIZE + self.button_width):
+            print('x-click correct')
+            if pos[1] > (4.25 * SQSIZE) and pos[1] < (4.25 * SQSIZE + self.button_hight):
+                print('person')
+                return False, True
+
+            elif pos[1] > (5.25 * SQSIZE) and pos[1] < (5.25 * SQSIZE + self.button_hight):
+                print('bot')
+                return True, True
+
+            else: return False, False
+
         else: return False, False

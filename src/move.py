@@ -10,8 +10,8 @@ class Move:
     # bug testing purposes
     def __str__(self):
         s = ''
-        s += f'({self.initial.row}, {self.initial.row})'
-        s += f' -> ({self.final.col}, {self.final.col})'
+        s += f'({self.initial.row}, {self.initial.col})'
+        s += f' -> ({self.final.row}, {self.final.col})'
         return s
 
     # if self.initial and self.final are equal in two Moves, the two Moves are equal

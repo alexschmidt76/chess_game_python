@@ -6,6 +6,7 @@ from game import Game
 from square import Square
 from move import Move
 from menu import Menu
+from ai import AI
 
 # controls the flow of the game
 
@@ -30,6 +31,7 @@ class Main:
         title = Menu()
 
         while True:
+            # menu
             while not game_occurring:
                 if not is_win:
                     game.show_bg(screen)
@@ -68,109 +70,138 @@ class Main:
             if dragger.dragging:
                 dragger.update_blit(screen)
 
-            for event in pygame.event.get():
+            # check if next player is human
+            if not computer_playing or game.next_player == 'white':
+                for event in pygame.event.get():
 
-                # click
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    dragger.update_mouse(event.pos)
+                    # click
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        dragger.update_mouse(event.pos)
 
-                    clicked_row = dragger.mouseY // SQSIZE
-                    clicked_col = dragger.mouseX // SQSIZE
+                        clicked_row = dragger.mouseY // SQSIZE
+                        clicked_col = dragger.mouseX // SQSIZE
 
-                    # if clicked square has a piece ?
-                    if board.squares[clicked_row][clicked_col].has_piece():
-                        piece = board.squares[clicked_row][clicked_col].piece
-                        # valid piece (color) ?
-                        if piece.color == game.next_player:
-                            board.calc_moves(piece, clicked_row, clicked_col, bool=True)
-                            dragger.save_initial(event.pos)
-                            dragger.drag_piece(piece)
-                            # show methods 
+                        # if clicked square has a piece ?
+                        if board.squares[clicked_row][clicked_col].has_piece():
+                            piece = board.squares[clicked_row][clicked_col].piece
+                            # valid piece (color) ?
+                            if piece.color == game.next_player:
+                                board.calc_moves(piece, clicked_row, clicked_col, bool=True)
+                                dragger.save_initial(event.pos)
+                                dragger.drag_piece(piece)
+                                # show methods 
+                                game.show_bg(screen)
+                                game.show_last_move(screen)
+                                game.show_moves(screen)
+                                game.show_pieces(screen)
+
+                    # mouse motion
+                    elif event.type == pygame.MOUSEMOTION:
+                        motion_row = event.pos[1] // SQSIZE
+                        motion_col = event.pos[0] // SQSIZE
+
+                        game.set_hover(motion_row, motion_col)
+
+                        if dragger.dragging:
+                            dragger.update_mouse(event.pos)
+                            # show methods
                             game.show_bg(screen)
                             game.show_last_move(screen)
                             game.show_moves(screen)
                             game.show_pieces(screen)
+                            game.show_hover(screen)
+                            dragger.update_blit(screen)
 
-                # mouse motion
-                elif event.type == pygame.MOUSEMOTION:
-                    motion_row = event.pos[1] // SQSIZE
-                    motion_col = event.pos[0] // SQSIZE
+                    # click release
+                    elif event.type == pygame.MOUSEBUTTONUP:
 
-                    game.set_hover(motion_row, motion_col)
+                        if dragger.dragging:
+                            dragger.update_mouse(event.pos)
 
-                    if dragger.dragging:
-                        dragger.update_mouse(event.pos)
-                        # show methods
-                        game.show_bg(screen)
-                        game.show_last_move(screen)
-                        game.show_moves(screen)
-                        game.show_pieces(screen)
-                        game.show_hover(screen)
-                        dragger.update_blit(screen)
+                            released_row = dragger.mouseY // SQSIZE
+                            released_col = dragger.mouseX // SQSIZE
 
-                # click release
-                elif event.type == pygame.MOUSEBUTTONUP:
+                            # create possible move
+                            initial = Square(dragger.initial_row, dragger.initial_col)
+                            final = Square(released_row, released_col)
+                            move = Move(initial, final)
 
-                    if dragger.dragging:
-                        dragger.update_mouse(event.pos)
+                            # valid move ?
+                            if board.valid_move(dragger.piece, move):
+                                # normal capture
+                                captured = board.squares[released_row][released_col].has_piece()
+                                board.move(dragger.piece, move)
 
-                        released_row = dragger.mouseY // SQSIZE
-                        released_col = dragger.mouseX // SQSIZE
+                                board.set_true_en_passant(dragger.piece)                            
 
-                        # create possible move
-                        initial = Square(dragger.initial_row, dragger.initial_col)
-                        final = Square(released_row, released_col)
-                        move = Move(initial, final)
+                                # sounds
+                                game.play_sound(captured)
 
-                        # valid move ?
-                        if board.valid_move(dragger.piece, move):
-                            # normal capture
-                            captured = board.squares[released_row][released_col].has_piece()
-                            board.move(dragger.piece, move)
+                                # show methods
+                                game.show_bg(screen)
+                                game.show_last_move(screen)
+                                game.show_pieces(screen)
 
-                            board.set_true_en_passant(dragger.piece)                            
+                                # next turn
+                                if not game.next_turn(board):
+                                    game_occurring = False
+                                    is_win = True
+                                    winner = 'white' if game.next_player == 'black' else 'black'
+                                                                    
+                                else:
+                                    print(f'{dragger.piece.color}: {dragger.piece.name} {Square(released_row, released_col).get_alphacol(released_col)}{ROWS - released_row}')
 
-                            # sounds
-                            game.play_sound(captured)
+                            dragger.undrag_piece()
 
-                            # show methods
-                            game.show_bg(screen)
-                            game.show_last_move(screen)
-                            game.show_pieces(screen)
+                    # key press
+                    elif event.type == pygame.KEYDOWN:
 
-                            # next turn
-                            if not game.next_turn(board):
-                                game_occurring = False
-                                is_win = True
-                                winner = 'white' if game.next_player == 'black' else 'black'
-                                                                
-                            else:
-                                print(f'{dragger.piece.color}: {dragger.piece.name} {Square(released_row, released_col).get_alphacol(released_col)}{ROWS - released_row}')
+                        # changing themes
+                        if event.key == pygame.K_t:
+                            game.change_theme()
 
-                                if computer_playing and game.next_player == 'black':
-                                    # make AI moves here
-                                    pass
+                        # reset game
+                        if event.key == pygame.K_r:
+                            game.reset()
+                            game = self.game
+                            board = self.game.board
+                            dragger = self.game.dragger
 
-                    dragger.undrag_piece()
+                    # quit application
+                    elif event.type == pygame.QUIT:
+                        pygame.quit()
+                        sys.exit()
 
-                # key press
-                elif event.type == pygame.KEYDOWN:
+            # check if next player is ai
+            elif computer_playing and game.next_player == 'black':
+                ai = AI(board)
 
-                    # changing themes
-                    if event.key == pygame.K_t:
-                        game.change_theme()
+                # make ai move here
+                move = ai.chose_random_move()
+                piece = board.squares[move.initial.row][move.initial.col].piece
 
-                     # reset game
-                    if event.key == pygame.K_r:
-                        game.reset()
-                        game = self.game
-                        board = self.game.board
-                        dragger = self.game.dragger
+                captured = board.squares[move.final.row][move.final.col].has_piece()
+                board.move(piece, move)
 
-                # quit application
-                elif event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
+                board.set_true_en_passant(piece)                            
+
+                # sounds
+                game.play_sound(captured)
+                print(f'captured: {captured}')
+
+                # show methods
+                game.show_bg(screen)
+                game.show_last_move(screen)
+                game.show_pieces(screen)
+
+                # next turn
+                if not game.next_turn(board):
+                    game_occurring = False
+                    is_win = True
+                    winner = 'white' if game.next_player == 'black' else 'black'
+                                                    
+                else:
+                    print(f'black: {piece.name} {Square(move.final.row, move.final.col).get_alphacol(move.final.col)}{ROWS - move.final.row}')
 
             pygame.display.update()
 

@@ -455,6 +455,7 @@ class Board:
 
     # add initial pieces and locations to array of squares
     def _add_pieces(self, color):
+
         row_pawn, row_other = (6, 7) if color == 'white' else (1, 0)
 
         # pawns
@@ -478,3 +479,12 @@ class Board:
 
         # king
         self.squares[row_other][4] = Square(row_other, 4, King(color)) 
+
+    # print board in console
+    def print_board(self):
+        print('\n')
+        for row in range(8):
+            print(f'{self.squares[row][0].square_string()}|{self.squares[row][1].square_string()}|{self.squares[row][2].square_string()}|{self.squares[row][3].square_string()}|{self.squares[row][4].square_string()}|{self.squares[row][5].square_string()}|{self.squares[row][6].square_string()}|{self.squares[row][7].square_string()}')
+            if row != 7:
+                print('---------------')
+        print('\n')

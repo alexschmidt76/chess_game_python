@@ -16,6 +16,14 @@ class Square:
     def __eq__(self, other):
         return self.row == other.row and self.col == other.col
 
+    def square_string(self):
+        s = ''
+        if self.piece is not None:
+            s += f'{self.piece.letter}'
+        else:
+            s += ' '
+        return s
+
     # check for piece in square
     def has_piece(self):
         return self.piece != None
