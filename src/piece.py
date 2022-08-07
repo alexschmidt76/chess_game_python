@@ -9,7 +9,7 @@ class Piece:
         self.name = name
         self.letter = letter
         self.color = color
-        value_sign = 1 if color == 'white' else -1
+        value_sign = 1 if color == 'black' else -1
         self.value = value * value_sign
         self.moves = []
         self.moved = False

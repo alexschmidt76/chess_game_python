@@ -1,34 +1,38 @@
 from random import randint
 from copy import deepcopy
+from board import Board
 
 from const import *
 
 class AI:
 
-    def __init__(self, board) -> None:
-        self.board = deepcopy(board)
-        board.print_board()
-        self.color = 'black' # as of now, ai is always black
+    def __init__(self) -> None:
+        self.color = 'black'
 
-    # return list of valid moves for ai
-    def valid_moves(self):
-        board = self.board
-        valid_moves = []
+    # get pieces that have valid moves
+    def get_valid_pieces(self, board):
+        # copy board
+        temp_board = deepcopy(board)
+        valid_piece_positions = []
 
-        # find all valid moves
+        # check each piece for valid moves
         for row in range(ROWS):
             for col in range(COLS):
-                if board.squares[row][col].has_team_piece(self.color):
-                    piece = deepcopy(board.squares[row][col].piece)
-                    board.calc_moves(piece, row, col)
-                    if len(piece.moves) > 0:
-                        for move in piece.moves:
-                            valid_moves.append(move)
+                if temp_board.squares[row][col].has_team_piece(self.color):
+                    temp_piece = deepcopy(temp_board.squares[row][col].piece)
+                    temp_board.calc_moves(temp_piece, row, col)
+                    if len(temp_piece.moves) > 0:
+                        valid_piece_positions.append(temp_board[row][col])
 
-        return valid_moves
+    # evaluate move
+    def eval(self, board, move):
+        # copy board
+        temp_board = deepcopy(board)
 
-    def chose_random_move(self):
-        moves = self.valid_moves()
-        return moves[randint(0, len(moves) - 1)]
+        # for captured pieces, return piece value
+        if board.squares[move.final.row][move.final.col].has_enemy_piece():
+            return board.squares[move.final.row][move.final.col].piece.value
+        
+        else: return 0
 
- 
+    
